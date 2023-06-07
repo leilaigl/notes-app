@@ -2,6 +2,10 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "assets/fonts/Nunito-Light.ttf",
+      "sha1": "7879b46e377513f6eb1c52f99000c8e96f36cf6e"
+    },
+    {
       "path": "assets/fonts/Nunito-Regular.ttf",
       "sha1": "4b7236ba666cb77f00d8cb2a17696cc0dc2b2cc9"
     },
