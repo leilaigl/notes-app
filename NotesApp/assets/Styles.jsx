@@ -59,6 +59,7 @@ module.exports = StyleSheet.create({
     borderRadius: 10,
     padding: 30,
     marginBottom: '5%',
+    flex: 1,
   },
   text: {
     fontFamily: 'Nunito-Regular',
