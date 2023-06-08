@@ -4,6 +4,6 @@ An Android application that allows users to view, delete, add, and edit notes us
 
 This app was made with React Native.
 
-https://github.com/leilaigl/notes-app/assets/86651236/60476c2e-b2db-46f5-8096-693774375259
+https://github.com/leilaigl/notes-app/assets/86651236/132b4557-58a4-4ccc-bf89-0cbc6302ec1c
 
 Figma UI - https://www.figma.com/community/file/1014161465589596715
