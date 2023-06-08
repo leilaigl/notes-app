@@ -89,15 +89,20 @@ export default function Home({navigation}) {
                   marginHorizontal: '5%',
                 }}>
                 <TextInput
+                  placeholder="Search by the keyword..."
+                  placeholderTextColor="#CCCCCC"
                   onChangeText={text => setSearchTerm(text)}
-                  style={{flex: 1}}
+                  style={[
+                    styles.splashText,
+                    {flex: 1, fontSize: 20, color: '#CCCCCC'},
+                  ]}
                 />
                 <TouchableOpacity
                   onPress={() => {
                     setSearchTerm('');
                     setSearchActive(false);
                   }}>
-                  <Icon name="close" size={24} color="white" />
+                  <Icon name="close" size={24} color="#CCCCCC" />
                 </TouchableOpacity>
               </View>
             ) : (
@@ -181,8 +186,8 @@ export default function Home({navigation}) {
           activeOpacity={1}>
           <View style={styles.modalContainer}>
             <Text style={[styles.text, styles.modalText]}>
-              Designed by - Figma Community{'\n'}
-              Redesigned by - Divya Kelaskar{'\n'}
+              Designed by - Divya Kelaskar{'\n'}
+              Redesigned by - Figma Community{'\n'}
               Illustrations - Storyset{'\n'}
               Icons - Material Icons{'\n'}
               Font - Nunito
