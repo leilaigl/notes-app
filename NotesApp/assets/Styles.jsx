@@ -83,4 +83,14 @@ module.exports = StyleSheet.create({
     color: '#CFCFCF',
     lineHeight: 25,
   },
+  modalBtn: {
+    backgroundColor: 'red',
+    borderRadius: 5,
+    paddingHorizontal: '10%',
+    paddingVertical: '2%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 40,
+    width: 120,
+  },
 });

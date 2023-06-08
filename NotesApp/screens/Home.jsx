@@ -19,7 +19,6 @@ import styles from '../assets/Styles';
 import NoteContext from '../context/NoteContext';
 
 export default function Home({navigation}) {
-  const {notes, setNotes} = useContext(NoteContext);
   const cardColors = [
     '#FD99FF',
     '#FF9E9E',
@@ -29,19 +28,23 @@ export default function Home({navigation}) {
     '#B69CFF',
   ];
 
+  const {notes, setNotes} = useContext(NoteContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredNotes, setFilteredNotes] = useState([]);
-
-  useEffect(() => {
-    const filtered = notes.filter(note =>
-      note.title.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
-    setFilteredNotes(filtered);
-  }, [searchTerm, notes]);
+  const [searchActive, setSearchActive] = useState(false);
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
+  };
+
+  const generateId = () => {
+    if (notes.length !== 0) {
+      const lastNote = notes[notes.length - 1];
+      return lastNote.id + 1;
+    } else {
+      return 0;
+    }
   };
 
   const deleteItem = id => {
@@ -65,7 +68,12 @@ export default function Home({navigation}) {
     );
   };
 
-  const [searchActive, setSearchActive] = useState(false);
+  useEffect(() => {
+    const filtered = notes.filter(note =>
+      note.title.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+    setFilteredNotes(filtered);
+  }, [searchTerm, notes]);
 
   return (
     <View style={styles.container}>
@@ -127,11 +135,12 @@ export default function Home({navigation}) {
                   key={note.id}
                   renderRightActions={renderRightActions(note.id)}>
                   <TouchableOpacity
-                    key={note.id}
                     onPress={() =>
                       navigation.navigate('ViewNote', {
+                        id: note.id,
                         title: note.title,
-                        description: note.content,
+                        content: note.content,
+                        editOn: false,
                       })
                     }>
                     <View
@@ -169,7 +178,17 @@ export default function Home({navigation}) {
           <Text style={styles.splashText}>Create your first note!</Text>
         </View>
       )}
-      <TouchableOpacity style={styles.addNote}>
+      <TouchableOpacity
+        style={styles.addNote}
+        onPress={() => {
+          const currId = generateId();
+          navigation.navigate('ViewNote', {
+            id: currId,
+            title: '',
+            content: '',
+            editOn: true,
+          });
+        }}>
         <View>
           <Icon name="add" size={48} color="white" />
         </View>
