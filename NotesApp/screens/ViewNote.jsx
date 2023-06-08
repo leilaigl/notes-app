@@ -1,9 +1,11 @@
-import * as React from 'react';
-import {Button, View, Text, TouchableOpacity, ScrollView} from 'react-native';
-import styles from '../assets/Styles';
+import React, { useContext } from 'react';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import styles from '../assets/Styles';
+import NoteContext from '../context/NoteContext';
 
 export default function ViewNote({navigation, route}) {
+  const { notes, setNotes } = useContext(NoteContext);
   const {title, description} = route.params;
 
   return (

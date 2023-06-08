@@ -1,67 +1,25 @@
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
-  Button,
-  View,
+  Dimensions,
   Image,
-  Text,
-  TouchableOpacity,
   Modal,
   ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import styles from '../assets/Styles';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import {
+  GestureHandlerRootView,
   RectButton,
   Swipeable,
-  GestureHandlerRootView,
 } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import styles from '../assets/Styles';
+import NoteContext from '../context/NoteContext';
 
 export default function Home({navigation}) {
-  const [notes, setNotes] = useState([
-    {
-      id: 1,
-      title: 'UI concepts worth existing',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-    },
-    {
-      id: 2,
-      title: 'Book Review: The Design of Everyday Things by Don Norman',
-      content:
-        'The Design of Everyday Things is required reading for anyone who is interested in the user experience. I personally like to reread it every year or two. Norman is aware of the durability of his work and the applicability of his principles to multiple disciplines. If you know the basics of design better than anyone else, you can apply them flawlessly anywhere.',
-    },
-    {
-      id: 3,
-      title: 'Animes produced by UFOTable',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-    },
-    {
-      id: 4,
-      title: 'Mangas planned to read',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-    },
-    {
-      id: 5,
-      title: 'Awesome tweets collection',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-    },
-    {
-      id: 6,
-      title: 'List of free & open source apps',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
-    },
-    {
-      id: 7,
-      title: 'Lorem Ipsum',
-      content:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sapien faucibus et molestie ac. Egestas pretium aenean pharetra magna ac placerat. Sem et tortor consequat id porta. Velit egestas dui id ornare arcu odio ut sem. Condimentum lacinia quis vel eros donec ac odio. Cursus metus aliquam eleifend mi in nulla posuere sollicitudin aliquam. Velit euismod in pellentesque massa. Aliquet sagittis id consectetur purus.',
-    },
-  ]);
-
+  const {notes, setNotes} = useContext(NoteContext);
   const cardColors = [
     '#FD99FF',
     '#FF9E9E',
@@ -72,6 +30,15 @@ export default function Home({navigation}) {
   ];
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredNotes, setFilteredNotes] = useState([]);
+
+  useEffect(() => {
+    const filtered = notes.filter(note =>
+      note.title.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+    setFilteredNotes(filtered);
+  }, [searchTerm, notes]);
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
@@ -81,7 +48,7 @@ export default function Home({navigation}) {
     setNotes(prevItems => prevItems.filter(item => item.id !== id));
   };
 
-  const renderRightActions = id => (progress, dragX) => {
+  const renderRightActions = id => () => {
     return (
       <RectButton
         style={[
@@ -98,49 +65,96 @@ export default function Home({navigation}) {
     );
   };
 
+  const [searchActive, setSearchActive] = useState(false);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.heading}>Notes</Text>
+        {!searchActive && <Text style={styles.heading}>Notes</Text>}
         <View style={{flex: 1}} />
-        <TouchableOpacity>
-          <View style={[styles.headerBtn, {marginRight: '5%'}]}>
-            <Icon name="search" size={24} color="white" />
+        <TouchableOpacity onPress={() => setSearchActive(true)}>
+          <View
+            style={[
+              styles.headerBtn,
+              {
+                marginRight: '5%',
+                width: searchActive ? Dimensions.get('window').width * 0.9 : 50,
+              },
+            ]}>
+            {searchActive ? (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginHorizontal: '5%',
+                }}>
+                <TextInput
+                  onChangeText={text => setSearchTerm(text)}
+                  style={{flex: 1}}
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    setSearchTerm('');
+                    setSearchActive(false);
+                  }}>
+                  <Icon name="close" size={24} color="white" />
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <Icon name="search" size={24} color="white" />
+            )}
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={toggleModal}>
-          <View style={styles.headerBtn}>
-            <Icon name="info-outline" size={24} color="white" />
-          </View>
-        </TouchableOpacity>
+        {!searchActive && (
+          <TouchableOpacity onPress={toggleModal}>
+            <View style={styles.headerBtn}>
+              <Icon name="info-outline" size={24} color="white" />
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
       {notes.length !== 0 ? (
-        <ScrollView>
-          <GestureHandlerRootView>
-            {notes.map((note, index) => (
-              <Swipeable
-                key={note.id}
-                renderRightActions={renderRightActions(note.id)}>
-                <TouchableOpacity
+        filteredNotes.length !== 0 ? (
+          <ScrollView>
+            <GestureHandlerRootView>
+              {filteredNotes.map((note, index) => (
+                <Swipeable
                   key={note.id}
-                  onPress={() =>
-                    navigation.navigate('ViewNote', {
-                      title: note.title,
-                      description: note.content,
-                    })
-                  }>
-                  <View
-                    style={[
-                      styles.card,
-                      {backgroundColor: cardColors[index % cardColors.length]},
-                    ]}>
-                    <Text style={styles.text}>{note.title}</Text>
-                  </View>
-                </TouchableOpacity>
-              </Swipeable>
-            ))}
-          </GestureHandlerRootView>
-        </ScrollView>
+                  renderRightActions={renderRightActions(note.id)}>
+                  <TouchableOpacity
+                    key={note.id}
+                    onPress={() =>
+                      navigation.navigate('ViewNote', {
+                        title: note.title,
+                        description: note.content,
+                      })
+                    }>
+                    <View
+                      style={[
+                        styles.card,
+                        {
+                          backgroundColor:
+                            cardColors[index % cardColors.length],
+                        },
+                      ]}>
+                      <Text style={styles.text}>{note.title}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </Swipeable>
+              ))}
+            </GestureHandlerRootView>
+          </ScrollView>
+        ) : (
+          <View style={styles.splash}>
+            <Image
+              style={styles.splashImg}
+              source={require('../assets/images/search-not-found.png')}
+            />
+            <Text style={styles.splashText}>
+              File not found. Try searching again.
+            </Text>
+          </View>
+        )
       ) : (
         <View style={styles.splash}>
           <Image
@@ -150,11 +164,11 @@ export default function Home({navigation}) {
           <Text style={styles.splashText}>Create your first note!</Text>
         </View>
       )}
-      <View style={styles.addNote}>
-        <TouchableOpacity>
+      <TouchableOpacity style={styles.addNote}>
+        <View>
           <Icon name="add" size={48} color="white" />
-        </TouchableOpacity>
-      </View>
+        </View>
+      </TouchableOpacity>
 
       <Modal
         animationType="fade"

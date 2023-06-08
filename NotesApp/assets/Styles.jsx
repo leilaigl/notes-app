@@ -11,12 +11,12 @@ module.exports = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: '5%'
+    marginBottom: '5%',
   },
   heading: {
     fontFamily: 'Nunito-SemiBold',
     color: 'white',
-    fontSize: 43,
+    fontSize: 30,
   },
   splash: {
     alignItems: 'center',
